@@ -37,12 +37,18 @@ input {
 
 #possibleWords li {
     background: #3a3a3c;
-    padding: 8px;
-    border-radius: 4px;
     font-family: monospace;
     text-transform: uppercase;
+    padding: 8px;
+    border-radius: 4px;
     font-size: 1.1rem;
     letter-spacing: 1px;
+}
+
+#possibleWords strong {
+    background: #3a3a3c;
+    font-family: monospace;
+    text-transform: uppercase;
 }
 
 .more-count {
@@ -51,7 +57,33 @@ input {
     font-style: italic;
 }
 
-@media only screen and (max-width:1075px) {
+.defaultPos {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+button {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+    padding: 10px 20px;
+    background-color: rgb(216, 42, 42);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+@media only screen and (max-width:1090px) {
     .row { display: block; }
     .column { max-width: 100%; }
+    .grayInput { width: 90%; }
+    .greenInput { max-width: 12%; }
+    .yellowInput { max-width: 12%; }
+}
+
+@media only screen and (max-width:490px) {
+    .greenInput { max-width: 90%; width: 90%; }
+    .yellowInput { max-width: 90%; width: 90%; }
 }

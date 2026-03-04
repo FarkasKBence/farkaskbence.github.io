@@ -19,6 +19,7 @@ function createInputs() {
     const greenContainer = document.querySelector('.greenPos');
     const yellowContainer = document.querySelector('.yellowPos');
     const grayContainer = document.querySelector('.grayPos');
+    const clearButton = document.getElementById('clearButton');
 
     //zöld betűk jó helyen vannak
     for (let i = 0; i < 5; i++) {
@@ -49,6 +50,12 @@ function createInputs() {
     grayInput.className = 'grayInput';
     grayInput.addEventListener('input', filterWords);
     grayContainer.appendChild(grayInput);
+
+    //clear button
+    clearButton.addEventListener('click', () => {
+        document.querySelectorAll('input').forEach(input => input.value = '');
+        filterWords();
+    });
 }
 
 //szavak szűrése input alapján, majd megjelenítése
@@ -99,7 +106,7 @@ function updateResults(words) {
     });
 
     if (words.length > 150) {
-        const more = document.createElement('li');
+        const more = document.createElement('strong');
         more.textContent = `+ ${words.length - 150} more`;
         more.className = "more-count";
         possibleWordsElement.appendChild(more);
