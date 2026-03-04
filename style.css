@@ -1,0 +1,57 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121213;
+    color: #ffffff;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 { margin-bottom: 30px; }
+
+.row { display: flex; gap: 40px; justify-content: center; }
+.column { flex: 1; max-width: 600px; }
+
+input {
+    margin: 4px;
+    padding: 12px;
+    border: 2px solid #3a3a3c;
+    background: #121213;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 4px;
+    text-transform: uppercase; 
+}
+
+.greenInput { border-color: #538d4e; width: 65px; }
+.yellowInput { border-color: #b59f3b; width: 65px; }
+.grayInput { border-color: #3a3a3c; width: 467px; margin-top: 10px; }
+
+#possibleWords {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+}
+
+#possibleWords li {
+    background: #3a3a3c;
+    padding: 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+.more-count {
+    background: transparent !important;
+    color: #818384;
+    font-style: italic;
+}
+
+@media only screen and (max-width:1075px) {
+    .row { display: block; }
+    .column { max-width: 100%; }
+}
