@@ -1,34 +1,390 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Wordle Helper</title>
+    <meta name="description" content="Farkas Bence - Programtervező Informatikus hallgató és junior szoftverfejlesztő portfóliója.">
+    <title>Farkas Bence - Portfolio</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.45;
+            color: #111;
+            background-color: #fff;
+        }
+        a {
+            color: #0044cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        h2 {
+            font-size: 1.2em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #333;
+        }
+        .header-links {
+            margin-bottom: 15px;
+            font-size: 0.95em;
+            color: #555;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .header-links span.divider {
+            color: #bbb;
+        }
+        .btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #e5e5e5;
+            text-decoration: none;
+        }
+        .lang-switch {
+            float: right;
+            font-size: 0.9em;
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .lang-switch:hover {
+            background: #e5e5e5;
+        }
+        
+        /* profile layout */
+        .profile-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            margin-bottom: 30px;
+            clear: both;
+        }
+        .profile-pic {
+            width: 140px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            flex-shrink: 0;
+        }
+        .profile-content {
+            flex-grow: 1;
+        }
+        .about-text {
+            margin-top: 0;
+            text-align: justify;
+        }
+
+        /* language display rules */
+        html[lang="hu"] .en { display: none !important; }
+        html[lang="en"] .hu { display: none !important; }
+
+        /* item layout */
+        .item-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+        .item-icon {
+            display: table-cell;
+            vertical-align: top;
+            width: 42px;
+            font-size: 1.5em;
+            padding-top: 2px;
+        }
+        .item-desc {
+            display: table-cell;
+            vertical-align: top;
+        }
+        .item-title {
+            font-weight: bold;
+        }
+
+        /* project gallery */
+        .project-gallery {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .project-gallery img {
+            flex: 1;
+            width: 100%;
+            aspect-ratio: 450 / 350;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        /* phone mode */
+        @media (max-width: 600px) {
+            .profile-container {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .header-links {
+                justify-content: center;
+            }
+            .about-text {
+                text-align: left;
+            }
+            .project-gallery {
+                flex-direction: column;
+            }
+            .project-gallery img {
+                max-width: 450px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+    <script>
+        function toggleLanguage() {
+            const htmlTag = document.documentElement;
+            const currentLang = htmlTag.getAttribute('lang');
+            const newLang = currentLang === 'hu' ? 'en' : 'hu';
+            htmlTag.setAttribute('lang', newLang);
+            document.getElementById('lang-btn').innerText = newLang === 'hu' ? 'EN' : 'HU';
+            localStorage.setItem('preferred-lang', newLang);
+        }
+
+        // load saved preferred language
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferred-lang');
+            if (savedLang) {
+                document.documentElement.setAttribute('lang', savedLang);
+                document.getElementById('lang-btn').innerText = savedLang === 'hu' ? 'EN' : 'HU';
+            }
+        });
+    </script>
 </head>
 <body>
-    <h1>Wordle Helper</h1>
-    <div class="row">
-        <div class="columnLeft">
-            <h2>Input Grid</h2>
-            <div id="wordle-grid"></div>
-            <div class="controls">
-                <button id="clearButton">Reset Grid</button>
-                <p class="instruction">Click a square to change color: <br> 
-                    <span class="square-ref black"></span> Ignored 
-                    <span class="square-ref gray"></span> Absent 
-                    <span class="square-ref green"></span> Correct 
-                    <span class="square-ref yellow"></span> Present
-                </p>
+
+    <button id="lang-btn" class="lang-switch" onclick="toggleLanguage()">EN</button>
+
+    <div class="profile-container">
+        <!-- profile -->
+        <img src="profile.jpg" alt="Farkas Bence" class="profile-pic">
+        
+        <div class="profile-content">
+            <h1>Farkas Bence</h1>
+            
+            <!-- contact -->
+            <div class="header-links">
+                <span>farkaskb0420@gmail.com</span>
+                <a href="mailto:farkaskb0420@gmail.com" class="btn hu">Email írása ✉️</a>
+                <a href="mailto:farkaskb0420@gmail.com" class="btn en">Draft Email ✉️</a>
+                <span class="divider">/</span>
+                <a href="https://github.com/FarkasKBence" target="_blank">GitHub</a>
+                <!-- <span class="divider">/</span>
+                <a href="CV_FarkasBence.pdf" target="_blank" class="btn hu">PDF Önéletrajz 📄</a>
+                <a href="CV_FarkasBence.pdf" target="_blank" class="btn en">PDF Resume 📄</a> -->
             </div>
-        </div>
-        <div class="columnRight">
-            <div class="output">
-                <h2>Possible Words</h2>
-                <ul id="possibleWords"></ul>
-            </div>
+
+            <p class="about-text hu">
+                Szia, Bence vagyok, az ELTE programtervező informatikus hallgatója. Főként Java és JavaScript alapú fejlesztéssel foglalkozom, de aktívan hozzájárulok nyílt forráskódú C++ projektekhez is. Szeretem a gyakorlatias kihívásokat, legyen szó egy agilis csapat vezetéséről Scrum Masterként, vagy egy saját OpenGL űrszimuláció megépítéséről. Jelenleg junior szoftverfejlesztői pozíciót keresek, ahol tovább fejlődhetek.
+            </p>
+            <p class="about-text en">
+                Hi, I'm Bence, a Computer Science student at ELTE. I focus on Java and JavaScript development, while also actively contributing to open-source C++ projects. I enjoy hands-on challenges, whether that involves leading an agile team as a Scrum Master or building a custom OpenGL space simulation from scratch. I am currently seeking a junior software developer role to further grow my skills.
+            </p>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <h2 class="hu">Kiemelt Kedvenc Projektek</h2>
+    <h2 class="en">Featured Pet Projects</h2>
+
+    <!-- Safari Tycoon -->
+    <div class="item-row">
+        <div class="item-icon">🦁</div>
+        <div class="item-desc">
+            <span class="item-title">
+                <a href="https://szofttech.inf.elte.hu/hall-of-fame/a-legenyseg" target="_blank">Safari Tycoon</a>
+            </span> — 
+            <span class="hu">Négyfős fejlesztőcsapatot vezettem Scrum Masterként egy valós idejű stratégiai játék létrehozásában. Java, Maven és Git alapokon készült, CI/CD munkafolyamatokkal és JUnit teszteléssel. Kiválasztva az ELTE Informatikai Karának dicsőségfalára (Hall of Fame).</span>
+            <span class="en">I led a group of four in developing a real-time tycoon/strategy game as a Scrum Master. Developed in Java using Maven and Git with CI/CD pipelines and JUnit testing. Selected for the ELTE Faculty of Informatics Hall of Fame.</span>
+        </div>
+    </div>
+
+    <!-- OpenGL space simulator -->
+    <div class="item-row">
+        <div class="item-icon">🚀</div>
+        <div class="item-desc">
+            <span class="item-title">
+                <a class="hu" href="https://github.com/FarkasKBence/Projects/tree/main/C%26C%2B%2B/solarsystem" target="_blank">C++ OpenGL Űrszimuláció</a>
+                <a class="en" href="https://github.com/FarkasKBence/Projects/tree/main/C%26C%2B%2B/solarsystem" target="_blank">C++ OpenGL Space Simulation</a>
+            </span> — 
+            <span class="hu">3D-s grafikus űrszimuláció, amely tiszta C++ és OpenGL segítségével valósítja meg a vizualizációt és a fizikai interakciókat.</span>
+            <span class="en">3D graphical space simulation built from scratch using C++ and OpenGL, implementing hardware-accelerated rendering and physics.</span>
+        </div>
+    </div>
+
+    <!-- CleverRaven -->
+    <div class="item-row">
+        <div class="item-icon">🐦</div>
+        <div class="item-desc">
+            <span class="item-title">
+                <a href="https://github.com/CleverRaven/Cataclysm-DDA/pulls?q=is%3Apr+author%3AFarkasKBence+is%3Aclosed" target="_blank">CleverRaven (C:DDA)</a>
+            </span> — 
+            <span class="hu">Közreműködésem egy hatalmas méretű, nyílt forráskódú C++ projektben. Elsősorban komplex JSON manipulációval, hibajavításokkal és az extenzív kódbázis architektúrájának mély megértésével foglalkoztam.</span>
+            <span class="en">My contributions to a large-scale open-source C++ project. Focused on complex JSON manipulation, bug fixes, and parsing extensive codebases.</span>
+        </div>
+    </div>
+
+    <!-- MaWa Project -->
+    <div class="item-row">
+        <div class="item-icon">🌐</div>
+        <div class="item-desc">
+            <span class="item-title">
+                <a href="https://mawa-project.github.io/Hungarian-Javanese-Wordle-Dictionary/index.html" target="_blank">MaWa-Project</a>
+            </span> — 
+            <span class="hu">Linguisztikai együttműködési weboldal. Nyelvtanulást segítő, Wordle-szerű online szótár, ahol minden egyes lemma automatikusan generált oldallal rendelkezik XML adatbázisból.</span>
+            <span class="en">Linguistic collaboration website. A Wordle-like online dictionary intended to aid language learning, with auto-generated pages for every lemma stored in XML.</span>
+        </div>
+    </div>
+
+    <!-- wordle helper -->
+    <div class="item-row">
+        <div class="item-icon">🧩</div>
+        <div class="item-desc">
+            <span class="item-title">
+                <a class="hu" href="wordle/index.html" target="_blank">Wordle Segítő</a>
+                <a class="en" href="wordle/index.html" target="_blank">Wordle Helper</a>
+            </span> — 
+            <span class="hu">Könnyűsúlyú, kliensoldali JavaScript/HTML/CSS alapú weboldal, amely egy hatékony Wordle szójáték-megoldó algoritmust tartalmaz.</span>
+            <span class="en">Lightweight, client-side JavaScript/HTML/CSS single-page application that implements an optimized algorithm to solve Wordle puzzles.</span>
+        </div>
+    </div>
+    
+    <!-- small projects -->
+    <div class="item-row">
+        <div class="item-icon">📂</div>
+        <div class="item-desc">
+            <span class="item-title">
+                <a class="hu" href="https://github.com/FarkasKBence/Projects" target="_blank">Mini-Projektek</a>
+                <a class="en" href="https://github.com/FarkasKBence/Projects" target="_blank">Mini Projects</a>
+            </span> — 
+            <span class="hu">További kisebb projektekjeim, egyetemi feladataim és kódolási kísérleteim gyűjteménye a GitHub profilomon.</span>
+            <span class="en">A collective repository of various smaller projects, university assignments, and coding experiments of mine hosted on my GitHub profile.</span>
+        </div>
+    </div>
+
+    <!-- gallery -->
+    <div class="project-gallery">
+        <img src="safari_small.png" alt="Safari Tycoon">
+        <img src="universe_small.png" alt="Space Simulation">
+        <img src="tree_small.png" alt="Mini Projects">
+    </div>
+
+
+    <h2 class="hu">Tapasztalatok & Tanulmányok</h2>
+    <h2 class="en">Experience & Education</h2>
+    
+    <!-- university -->
+    <div class="item-row">
+        <div class="item-icon">🎓</div>
+        <div class="item-desc">
+            <span class="item-title hu">(2023 - Jelenleg) Programtervező Informatikus BSc</span>
+            <span class="item-title en">(2023 - Present) BSc in Computer Science</span><br>
+            <span class="hu">Eötvös Loránd Tudományegyetem (ELTE), Informatikai Kar</span>
+            <span class="en">Eötvös Loránd University (ELTE), Faculty of Informatics</span>
+        </div>
+    </div>
+
+    <!-- library -->
+    <div class="item-row">
+        <div class="item-icon">📚</div>
+        <div class="item-desc">
+            <span class="item-title hu">(2022) Adattár-kezelő</span>
+            <span class="item-title en">(2022) Data Archivist</span><br>
+            <span class="hu">Füzesabonyi Városi Könyvtár (Dokumentumok digitalizálása, osztályozása, analóg iratok rendszerezése és Excel-kezelés)</span>
+            <span class="en">Füzesabony Public Library (Document digitization, classification, analog record organization & migration, Excel management)</span>
+        </div>
+    </div>
+
+
+    <h2 class="hu">Technológiai Készségek</h2>
+    <h2 class="en">Technical Skills</h2>
+    
+    <!-- code languages -->
+    <div class="item-row">
+        <div class="item-icon">💻</div>
+        <div class="item-desc">
+            <span class="item-title hu">Programozási Nyelvek</span>
+            <span class="item-title en">Programming Languages</span><br>
+            <span class="hu">
+                Java, C++, Python, JavaScript <span style="color:#666;">(kiváló)</span>; 
+                PHP, Bash, Haskell, R <span style="color:#666;">(jó)</span>
+            </span>
+            <span class="en">
+                Java, C++, Python, JavaScript <span style="color:#666;">(excellent)</span>; 
+                PHP, Bash, Haskell, R <span style="color:#666;">(good)</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- extra knowledge -->
+    <div class="item-row">
+        <div class="item-icon">🛠️</div>
+        <div class="item-desc">
+            <span class="item-title hu">Keretrendszerek & Eszközök</span>
+            <span class="item-title en">Frameworks & Tools</span><br>
+            <span class="hu">
+                OpenGL, Swing/AWT, pandas, Git, UML, SQL, HTML/CSS <span style="color:#666;">(kiváló)</span>; 
+                React, Docker, FastAPI, NumPy, PyTorch, Linux <span style="color:#666;">(jó)</span>
+            </span>
+            <span class="en">
+                OpenGL, Swing/AWT, pandas, Git, UML, SQL, HTML/CSS <span style="color:#666;">(excellent)</span>; 
+                React, Docker, FastAPI, NumPy, PyTorch, Linux <span style="color:#666;">(good)</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- spoken languages -->
+    <div class="item-row">
+        <div class="item-icon">🗣️</div>
+        <div class="item-desc">
+            <span class="item-title hu">Beszélt Nyelvek</span>
+            <span class="item-title en">Spoken Languages</span><br>
+            <span class="hu">
+                Magyar <span style="color:#666;">(Anyanyelv)</span>, 
+                Angol <span style="color:#666;">(C1)</span>, 
+                Német <span style="color:#666;">(B1)</span>, 
+                Indonéz <span style="color:#666;">(A2)</span>
+            </span>
+            <span class="en">
+                Hungarian <span style="color:#666;">(Native)</span>, 
+                English <span style="color:#666;">(C1)</span>, 
+                German <span style="color:#666;">(B1)</span>, 
+                Indonesian <span style="color:#666;">(A2)</span>
+            </span>
+        </div>
+    </div>
+
 </body>
 </html>
